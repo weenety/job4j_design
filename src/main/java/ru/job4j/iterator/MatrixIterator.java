@@ -13,20 +13,6 @@ public class MatrixIterator implements Iterator<Integer> {
         this.data = data;
     }
 
-    /*
-    @Override
-    public boolean hasNext() {
-        while (row < data.length) {
-            if (column < data[row].length) {
-                return true;
-            }
-            row++;
-            column = 0;
-        }
-        return false;
-    }
-
-     */
     @Override
     public boolean hasNext() {
         while (row < data.length && column >= data[row].length) {
