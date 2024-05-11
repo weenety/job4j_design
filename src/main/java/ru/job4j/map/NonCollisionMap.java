@@ -18,13 +18,15 @@ public class NonCollisionMap<K, V> implements SimpleMap<K, V> {
         if (count >= capacity * LOAD_FACTOR) {
             expand();
         }
-        if (table[findIndex(key)] == null) {
-            table[findIndex(key)] = new MapEntry<>(key, value);
+        boolean isPuted = false;
+        int index = findIndex(key);
+        if (table[index] == null) {
+            table[index] = new MapEntry<>(key, value);
             count++;
             modCount++;
-            return true;
+            isPuted = true;
         }
-        return false;
+        return isPuted;
     }
 
     private int hash(int hashCode) {
@@ -40,9 +42,7 @@ public class NonCollisionMap<K, V> implements SimpleMap<K, V> {
         MapEntry<K, V>[] newTable = new MapEntry[capacity];
         for (MapEntry<K, V> entry : table) {
             if (entry != null) {
-                int hash = hash(Objects.hashCode(entry.key));
-                int index = indexFor(hash);
-                newTable[index] = entry;
+                newTable[findIndex(entry.key)] = entry;
             }
         }
         table = newTable;
@@ -53,37 +53,39 @@ public class NonCollisionMap<K, V> implements SimpleMap<K, V> {
         return indexFor(hash);
     }
 
+    private boolean isKeysEqual(K key, int index) {
+        MapEntry<K, V> entry = table[index];
+        return entry != null && Objects.equals(Objects.hashCode(entry.key), Objects.hashCode(key))
+                && Objects.equals(entry.key, key);
+    }
+
     @Override
     public V get(K key) {
-        if (table[findIndex(key)] != null) {
-            if (Objects.equals(Objects.hashCode(table[findIndex(key)].key), Objects.hashCode(key))) {
-                if (Objects.equals(table[findIndex(key)].key, key)) {
-                    return table[findIndex(key)].value;
-                }
-            }
+        V result = null;
+        int index = findIndex(key);
+        if (isKeysEqual(key, index)) {
+            result = table[index].value;
         }
-        return null;
+        return result;
     }
 
     @Override
     public boolean remove(K key) {
-        if (table[findIndex(key)] != null) {
-            if (Objects.equals(Objects.hashCode(table[findIndex(key)].key), Objects.hashCode(key))) {
-                if (Objects.equals(table[findIndex(key)].key, key)) {
-                    table[findIndex(key)] = null;
-                    count--;
-                    modCount++;
-                    return true;
-                }
-            }
+        boolean isRemoved = false;
+        int index = findIndex(key);
+        if (isKeysEqual(key, index)) {
+            table[index] = null;
+            count--;
+            modCount++;
+            isRemoved = true;
         }
-        return false;
+        return isRemoved;
     }
 
     @Override
     public Iterator<K> iterator() {
 
-        return new Iterator<K>() {
+        return new Iterator<>() {
 
             private int currentIndex = 0;
             private int expectedModCount = modCount;
