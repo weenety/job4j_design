@@ -20,7 +20,7 @@ public class LogFilter {
             result = input.lines()
                     .filter(string -> {
                         String[] parts = string.split(" ");
-                        return parts[parts.length - 2].equals("404");
+                        return "404".equals(parts[parts.length - 2]);
                     }).toList();
         } catch (IOException e) {
             e.printStackTrace();
