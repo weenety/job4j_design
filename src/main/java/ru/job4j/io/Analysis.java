@@ -12,17 +12,17 @@ public class Analysis {
         try (BufferedReader reader = new BufferedReader(new FileReader(source));
              PrintWriter writer = new PrintWriter(new FileWriter(target))) {
             String line;
-            StringBuilder result = new StringBuilder();
             boolean serverUnavailable = false;
+            String[] parts;
             while ((line = reader.readLine()) != null) {
-                String[] parts = line.split(" ");
-                if ((parts[0].equals("400") || parts[0].equals("500")) && !serverUnavailable) {
-                    result.append(parts[1]).append(";");
+                parts = line.split(" ");
+                if (("400".equals(parts[0]) || "500".equals(parts[0])) && !serverUnavailable) {
+                    writer.print(parts[1]);
+                    writer.print(";");
                     serverUnavailable = true;
-                } else if ((parts[0].equals("200") || parts[0].equals("300")) && serverUnavailable) {
-                    result.append(parts[1]).append(";");
-                    writer.println(result);
-                    result.setLength(0);
+                } else if (("200".equals(parts[0]) || "300".equals(parts[0])) && serverUnavailable) {
+                    writer.print(parts[1]);
+                    writer.println(";");
                     serverUnavailable = false;
                 }
             }
