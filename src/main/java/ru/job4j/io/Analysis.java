@@ -16,15 +16,17 @@ public class Analysis {
             String[] parts;
             while ((line = reader.readLine()) != null) {
                 parts = line.split(" ");
-                if (("400".equals(parts[0]) || "500".equals(parts[0])) && !serverUnavailable) {
-                    writer.print(parts[1]);
-                    writer.print(";");
-                    serverUnavailable = true;
-                } else if (("200".equals(parts[0]) || "300".equals(parts[0])) && serverUnavailable) {
-                    writer.print(parts[1]);
-                    writer.println(";");
-                    serverUnavailable = false;
+                if (("400".equals(parts[0]) || "500".equals(parts[0])) == !serverUnavailable) {
+                    if (!serverUnavailable) {
+                        writer.print(parts[1]);
+                        writer.print(";");
+                    } else {
+                        writer.print(parts[1]);
+                        writer.println(";");
+                    }
+                    serverUnavailable = !serverUnavailable;
                 }
+
             }
         } catch (IOException e) {
             e.printStackTrace();
