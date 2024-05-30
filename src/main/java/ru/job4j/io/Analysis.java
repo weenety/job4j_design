@@ -17,11 +17,10 @@ public class Analysis {
             while ((line = reader.readLine()) != null) {
                 parts = line.split(" ");
                 if (("400".equals(parts[0]) || "500".equals(parts[0])) == !serverUnavailable) {
+                    writer.print(parts[1]);
                     if (!serverUnavailable) {
-                        writer.print(parts[1]);
                         writer.print(";");
                     } else {
-                        writer.print(parts[1]);
                         writer.println(";");
                     }
                     serverUnavailable = !serverUnavailable;
