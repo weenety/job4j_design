@@ -13,10 +13,8 @@ public class DuplicatesFinder extends SimpleFileVisitor<Path> {
 
     @Override
     public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) throws IOException {
-        if (Files.isRegularFile(file)) {
-            FileProperty fileProperty = new FileProperty(attrs.size(), file.getFileName().toString());
-            fileMap.computeIfAbsent(fileProperty, k -> new ArrayList<>()).add(file);
-        }
+        FileProperty fileProperty = new FileProperty(attrs.size(), file.getFileName().toString());
+        fileMap.computeIfAbsent(fileProperty, k -> new ArrayList<>()).add(file);
         return FileVisitResult.CONTINUE;
     }
 
