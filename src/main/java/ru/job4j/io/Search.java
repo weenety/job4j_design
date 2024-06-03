@@ -11,11 +11,10 @@ import java.util.function.Predicate;
 public class Search {
 
     public static void main(String[] args) throws IOException {
-        if (!validateArgs(args)) {
-            throw new IllegalArgumentException("Invalid arguments. Usage: start path, file extension");
+        if (validateArgs(args)) {
+            Path start = Paths.get(args[0]);
+            search(start, path -> path.toFile().getName().endsWith(args[1])).forEach(System.out::println);
         }
-        Path start = Paths.get(args[0]);
-        search(start, path -> path.toFile().getName().endsWith(args[1])).forEach(System.out::println);
     }
 
     public static List<Path> search(Path root, Predicate<Path> condition) throws IOException {
@@ -25,12 +24,22 @@ public class Search {
     }
 
     private static boolean validateArgs(String[] args) {
-        boolean isArgsCorrect = false;
-        if (args.length > 1) {
-            if ((!args[0].isEmpty() && Files.isDirectory(Paths.get(args[0]))) && !args[1].isEmpty()) {
-                isArgsCorrect = true;
+        if (args.length == 2) {
+            if (args[0].isEmpty()) {
+                throw new IllegalArgumentException("First argument is empty");
             }
+            if (!Files.isDirectory(Paths.get(args[0]))) {
+                throw new IllegalArgumentException("Start path not exist");
+            }
+            if (args[1].isEmpty()) {
+                throw new IllegalArgumentException("Second argument is empty");
+            }
+            if (!args[1].matches("^\\.[a-zA-Z0-9]+$")) {
+                throw new IllegalArgumentException("Second argument must contain the file extension");
+            }
+        } else {
+            throw new IllegalArgumentException("Invalid arguments. Usage: start path, file extension");
         }
-        return isArgsCorrect;
+        return true;
     }
 }
