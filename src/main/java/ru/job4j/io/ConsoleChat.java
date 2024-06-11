@@ -26,7 +26,7 @@ public class ConsoleChat {
         boolean isSilent = false;
         Random random = new Random();
         String userInput = "";
-        while (!userInput.equalsIgnoreCase(OUT)) {
+        while (!OUT.equalsIgnoreCase(userInput)) {
             userInput = scanner.nextLine();
             log.add(userInput);
             switch (userInput.toLowerCase()) {
