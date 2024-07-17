@@ -12,7 +12,7 @@ import java.util.StringJoiner;
 
 public class CSVReader {
 
-    public static void handle(ArgsName argsName) throws Exception {
+    private static void validateArgs(ArgsName argsName) {
         String path = argsName.get("path");
         String delimiter = argsName.get("delimiter");
         String out = argsName.get("out");
@@ -29,6 +29,14 @@ public class CSVReader {
         if (filter.isEmpty()) {
             throw new IllegalArgumentException("Filter cannot be empty");
         }
+    }
+
+    public static void handle(ArgsName argsName) throws Exception {
+        validateArgs(argsName);
+        String path = argsName.get("path");
+        String delimiter = argsName.get("delimiter");
+        String out = argsName.get("out");
+        String filter = argsName.get("filter");
         List<Integer> filteredIndexes = new ArrayList<>();
         List<String> filteredLines = new ArrayList<>();
         String[] filters = filter.split(",");
